@@ -1,0 +1,26 @@
+{
+  "name": "noderest",
+  "description": "Demo REST API with Node",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "^3.21.2",
+    "method-override": "^2.3.5",
+    "parser": "^0.1.4",
+    "passport": "^0.3.2",
+    "passport-openid": "^0.4.0",
+    "passport-steam": "^0.1.6"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "main": "routes.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://Imbaland@bitbucket.org/Imbaland/nodeserver.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/Imbaland/nodeserver#readme"
+}
