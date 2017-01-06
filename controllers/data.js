@@ -27,7 +27,7 @@ module.exports = {
 		return getIndexForVersion(version);
 	},
 	getVersionDataHeroSort: function(version) {
-		return sortData(getDataForVersion(version), "ad");
+		return sortData(getDataForVersion(version), "used_by_heroes");
 	}
 }
 

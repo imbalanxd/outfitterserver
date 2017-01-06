@@ -17,15 +17,25 @@ function startItemParseScheduler() {
 	var rule = new schedule.RecurrenceRule();
 	rule.minute = [0, 5, 10, 15, 20, 25, 30 ,35, 40, 45, 50, 55];
 	schedule.scheduleJob(rule, function() {
-		itemparse.runItemParse();
-		updateData();
+		itemparse.runItemParse(function(updateState, err) {
+			if(err != null) {
+				util.log("Error occured during update: " + err);
+			}
+			else {
+				if(!updateState.update)
+	  				util.log("No Update Required");
+	  			else
+	  				util.log('Update Complete: ' + updateState.id)
+				updateData();
+			}
+		});
 	});
 }
 
 function updateData() {
-	util.log("Checking for data update");
+	util.log("Checking Firebase data version");
 	updateRequired( function(id) {
-		util.log("Updating data to version " + id);
+		util.log("Updating Firebase data to version " + id);
 		var uploadData = data.getVersionDataHeroSort(id);
 		firebase.recursiveUpdate("public-data/items", uploadData, function(error) {
 			if(error == null) {
@@ -36,16 +46,18 @@ function updateData() {
 				firebase.update("private-data/versions", data.getIndexForVersion(id), version, 
 					function(error) {
 						if(error == null) {
-							util.log("Data version " + version["index"] + " added (" + version["id"] + ")");
+							util.log("Firebase data version " + version["index"] + " added (" + version["id"] + ")");
 						}
 						else {
 							util.log("Error updating data version: " + error);
 						}
+						util.log("");
 						updateData();
 					});
 			}
 			else {
 				util.log("Error occured while updating item data: " + error);
+				util.log("");
 				updateData();
 			}
 		});
@@ -61,7 +73,7 @@ function updateRequired(func) {
 				snapshot.forEach(function(child) {
 				if(child.val().hasOwnProperty("id")) {
 					var id = data.getNextVersion(child.val()["id"]);
-					util.log("Data version is " + child.val()["id"] + ", latest version is " + id);
+					// util.log("Data version is " + child.val()["id"] + ", latest version is " + id);
 					if(id != null)
 						func(id);
 					else
