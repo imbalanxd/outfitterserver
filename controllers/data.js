@@ -1,5 +1,7 @@
-var dataFolder = "../../dotaitems/";
-var versionIndex = require(dataFolder + "index.json");
+var fs = require('fs');
+var path = require('path');
+var dataFolder = path.join(__dirname, '../../dotaitems/');
+var versionIndexFileName = dataFolder + "index.json";
 var util = require('../util');
 
 module.exports = {
@@ -7,6 +9,8 @@ module.exports = {
 		return getVersionForIndex(1);
 	},
 	getLatestVersion: function() {
+		delete require.cache[versionIndexFileName];
+		versionIndex = JSON.parse(fs.readFileSync(versionIndexFileName, 'utf8'));
 		var max = 1;
 		for (var index in versionIndex) {
 			if (versionIndex.hasOwnProperty(index) && max < index) {
@@ -32,6 +36,8 @@ module.exports = {
 }
 
 function getIndexForVersion(version) {
+	delete require.cache[versionIndexFileName];
+	versionIndex = JSON.parse(fs.readFileSync(versionIndexFileName, 'utf8'));
 	for (var index in versionIndex) {
 	  if (versionIndex.hasOwnProperty(index) && (versionIndex[index].id == version)) {
 	    return index;
@@ -40,6 +46,8 @@ function getIndexForVersion(version) {
 }
 
 function getVersionForIndex(index) {
+	delete require.cache[versionIndexFileName];
+	versionIndex = JSON.parse(fs.readFileSync(versionIndexFileName, 'utf8'));
 	if(versionIndex.hasOwnProperty(index))
 		return versionIndex[index].id;
 	else
